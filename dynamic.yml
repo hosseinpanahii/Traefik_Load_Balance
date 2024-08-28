@@ -1,4 +1,5 @@
-# Dynamic configuratio
+# Dynamic configuration
+#If you enter with traefiks.panmal.ir and port 8080, you will be directed to the api@internal service
 http:
   routers:
     my-router:
@@ -6,6 +7,8 @@ http:
       entryPoints:
         - "other"
       service: "api@internal"
+      
+  # If you enter with webs.panmal.ir and port 80, you will be directed to the my-service service
     my-router-balance:
       rule: "Host(`webs.panmal.ir`)"
       entryPoints:
