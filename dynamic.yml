@@ -1,0 +1,21 @@
+# Dynamic configuratio
+http:
+  routers:
+    my-router:
+      rule: "Host(`traefiks.panmal.ir`)"
+      entryPoints:
+        - "other"
+      service: "api@internal"
+    my-router-balance:
+      rule: "Host(`webs.panmal.ir`)"
+      entryPoints:
+        - "web"
+      service: "my-service"
+  services:
+    my-service:
+      loadBalancer:
+        servers:
+          - url: "http://172.19.0.11/"
+            weight: 2
+          - url: "http://172.19.0.12/"
+            weight: 1

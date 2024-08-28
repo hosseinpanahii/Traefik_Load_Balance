@@ -1,0 +1,58 @@
+#networks:
+#  traefik:
+#    driver: bridge
+#    ipam:
+#     config:
+#       - subnet: 172.19.0.0/16
+#         gateway: 172.19.0.1
+services:
+  traefik:
+    image: traefik
+    container_name: traefik
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml:ro
+      # Add folder with dynamic configuration yml
+      - ./dynamic.yml:/dynamic.yml
+    networks:
+      - traefik
+
+  nginx-1:
+    image: nginx
+    container_name: nginx1
+    hostname: nginx1
+    volumes:
+      - ./site1/index.html:/usr/share/nginx/html/index.html
+    ports:
+      - 8001:80
+    networks:
+      traefik:
+         ipv4_address: "172.19.0.11"
+  nginx-2:
+    image: nginx
+    container_name: nginx2
+    hostname: nginx2
+    volumes:
+      - ./site2/index.html:/usr/share/nginx/html/index.html
+    ports:
+      - 8002:80
+    networks:
+      traefik:
+        ipv4_address: "172.19.0.12"
+networks:
+  traefik:
+    external: false
+    name: traefik
+    driver: bridge
+    ipam:
+        config:
+         - subnet: 172.19.0.0/16
+           gateway: 172.19.0.1
