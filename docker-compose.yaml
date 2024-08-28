@@ -1,10 +1,4 @@
-#networks:
-#  traefik:
-#    driver: bridge
-#    ipam:
-#     config:
-#       - subnet: 172.19.0.0/16
-#         gateway: 172.19.0.1
+
 services:
   traefik:
     image: traefik
@@ -13,14 +7,14 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - 80:80
+      - 80:80 #default port
       - 443:443
-      - 8080:8080
+      - 8080:8080 #dashboard port
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/traefik.yml:ro
-      # Add folder with dynamic configuration yml
+      - ./traefik.yml:/traefik.yml:ro #static file
+      # Add folder with dynamic configuration yml 
       - ./dynamic.yml:/dynamic.yml
     networks:
       - traefik
@@ -47,6 +41,7 @@ services:
     networks:
       traefik:
         ipv4_address: "172.19.0.12"
+#NOTE: here i use internal network due to set static ip on containers
 networks:
   traefik:
     external: false
